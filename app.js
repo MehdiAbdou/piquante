@@ -1,7 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const userRoutes = require('./routes/user');
 
+
+mongoose.connect('mongodb+srv://mayday96:Scanner.79@cluster0.ax2lu.mongodb.net/?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  
+app.use(express.json());
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,11 +19,6 @@ app.use((req, res, next) => {
     next();
   });
 
-  mongoose.connect('mongodb+srv://mayday96:Scanner.79@cluster0.ax2lu.mongodb.net/?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use('/api/sauce', (req, res, next) => {
     const stuff = [
@@ -37,5 +41,7 @@ app.use('/api/sauce', (req, res, next) => {
     ];
     res.status(200).json(stuff);
   });
+
+app.use('/api/auth', userRoutes);
 
 module.exports = app;
